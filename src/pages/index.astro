@@ -1,0 +1,76 @@
+---
+import Guitarra from "../components/Guitarra.astro";
+import Post from "../components/Post.astro";
+import Layout from "../layouts/Layout.astro";
+import Curso from "../components/Curso.astro";
+
+const urlGuitar = `${import.meta.env.PUBLIC_API_URL}/guitarras?populate=imagen`;
+const urlPost = `${import.meta.env.PUBLIC_API_URL}/posts?populate=imagen`;
+const urlCurso = `${import.meta.env.PUBLIC_API_URL}/curso?populate=imagen`;
+
+// Para hacer varias consultas de API se debe usar el array Desteucturing
+
+const [resGuitar, resBlog, resCurso] = await Promise.all([
+	fetch(urlGuitar),
+	fetch(urlPost),
+	fetch(urlCurso),
+]);
+
+const [{ data: guitar }, { data: post }, { data: curso }] = await Promise.all([
+	resGuitar.json(),
+	resBlog.json(),
+	resCurso.json(),
+]);
+---
+
+<Layout
+	title="Dream Guitar"
+	description="Tienda de guitarras, cursos, blog y mas"
+>
+	<main class="contenedor">
+		<h1 class="heading">Nuestra coleccion</h1>
+		<div class="grid">
+			{
+				guitar?.map((guitarra) => (
+					<Guitarra
+						nombre={guitarra.attributes.nombre}
+						descripcion={
+							guitarra.attributes.descripcion[0].children[0].text
+						}
+						url={guitarra.attributes.url}
+						precio={guitarra.attributes.precio}
+						imagen={guitarra.attributes.imagen}
+					/>
+				))
+			}
+		</div>
+	</main>
+
+	<section>
+		<h2 class="heading">Cursos</h2>
+		<Curso
+					titulo={curso.attributes.titulo}
+					contenido={curso.attributes.contenido[0].children[0].text}
+					imagen={curso.attributes.imagen}
+				/>
+	</section>
+
+	<section class="contenedor">
+		<h2 class="heading">Blog</h2>
+		<div class="grid">
+			{
+				post?.map((post) => (
+					<Post
+						titulo={post.attributes.titulo}
+						contenido={
+							post.attributes.contenido[0].children[0].text
+						}
+						publishedAt={post.attributes.publishedAt}
+						url={post.attributes.url}
+						imagen={post.attributes.imagen}
+					/>
+				))
+			}
+		</div>
+	</section>
+</Layout>

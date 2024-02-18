@@ -1,0 +1,111 @@
+---
+import type { GetStaticPaths } from "astro";
+import Layout from '../../layouts/Layout.astro'
+import Image from 'astro/components/Image.astro';
+
+
+export async function getStaticPaths( ) {
+    const url = `${import.meta.env.PUBLIC_API_URL}/guitarras?populate=imagen`
+    const respueta = await fetch(url)
+    const {data} = await respueta.json()
+
+    return data.map(id => ({
+        params: {
+            id: id.attributes.url
+        },
+        props: {
+            guitarra: id.attributes
+        }
+    }))
+
+    
+}
+const { nombre, descripcion, precio, imagen } = Astro.props.guitarra
+
+---
+
+<Layout title={nombre}description="Tienda de guitarras, cursos, blog y mas">
+    <main class="guitarra">
+        <Image src={imagen.data.attributes.url} alt="imagen_guitarra" width="300" height="300"/>
+
+        <div class="contenido">
+            <h3>{nombre}</h3>
+            <p class="descripcion">{descripcion[0].children[0].text}</p>
+            <p class="precio">${precio}</p>
+
+            <form class="formulario">
+                <label for="cantidad">cantidad</label>
+                <select name="" id="cantidad">
+                    <option value="0">-- SELECIONE --</option>
+                    <option value="1">1</option>
+                    <option value="1">2</option>
+                    <option value="1">3</option>
+                </select>
+                <input type="submit" value="Agregar al carrito">
+            </form>
+        </div>
+    </main>
+</Layout>
+
+<style>
+    .guitarra {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    gap: 1rem;
+    align-items: center;
+    max-width: 70rem;
+    margin: 0 auto;
+}
+.contenido {
+    padding: 1rem;
+}
+.contenido h3 {
+    font-size: 3rem;
+    text-transform: uppercase;
+    color: var(--primary);
+}
+.descripcion {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 6;
+    overflow: hidden;
+    font-size: 1.8rem;
+}
+.precio {
+    color: var(--primary);
+    font-size: 4rem;
+    margin: 0;
+    font-weight: 900;
+}
+.formulario {
+    margin-top: 4rem;
+    display: flex;
+    gap: 1rem;
+    flex-direction: column;
+}
+.formulario label {
+    font-size: 2.2rem;
+}
+.formulario select {
+    border: 1px solid var(--black);
+    padding: 1rem;
+    text-align: center;
+    border-radius: 1rem;
+}
+.formulario input[type="submit"] {
+    display: block;
+    width: 100%;
+    text-transform: uppercase;
+    font-weight: bold;
+    border: none;
+    padding: 1.4rem;
+    background-color: var(--black);
+    color: var(--white);
+    transition-property: background-color;
+    transition-duration: 300ms;
+}
+.formulario input[type="submit"]:hover {
+    background-color: var(--primary);
+    cursor: pointer;
+}
+</style>

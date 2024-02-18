@@ -1,0 +1,57 @@
+---
+import Image from 'astro/components/Image.astro';
+
+export interface Props {
+    titulo: string;
+    contenido: string;
+    imagen: object;
+
+}
+
+const {titulo, contenido, imagen} = Astro.props
+
+// Usar variables de javaScript en css
+//const url = imagen['data'].attributes.formats.medium.url
+const backgroundImg = `url(${imagen['data'].attributes.formats.medium.url})`
+---
+
+<style define:vars={{backgroundImg}}>
+    
+    .curso {
+        background-image: linear-gradient(to right, rgb(0 0 0/ .65), rgb(0 0 0 / .85)), var(--backgroundImg);
+    }    
+</style>
+
+<!-- <Image src={imagen['data'].attributes.formats.medium.url} alt='Imagen_curso' width='750' height='294' /> -->
+<section class="curso">
+    <div class="contenedor grid">
+        <div class="contenido">
+            <h3 class="heading">{titulo}</h3>
+            <p>{contenido}</p>
+        </div>
+    </div>
+</section>
+
+<style>
+    .curso {
+    padding: 10rem 0;
+    margin-top: 10rem;
+    background-size: cover;
+    background-position: center center;
+}
+@media (min-width: 768px) {
+    .grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+    }
+    .contenido {
+        grid-column: 2 / 3;
+    }
+}
+.curso p {
+    text-align: justify;
+    font-size: 2.4rem;
+    color: var(--white);
+    
+}
+</style>

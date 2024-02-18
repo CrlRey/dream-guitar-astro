@@ -1,0 +1,76 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Image from 'astro/components/Image.astro';
+import { formatearFecha } from "../helpers/fecha";
+
+export interface Props {
+    titulo: string;
+    publishedAt: string;
+    contenido: string;
+    url: string;
+    imagen: object;
+
+}
+
+const { titulo, contenido, url, imagen, publishedAt } = Astro.props
+---
+
+<article>
+    <Image src={imagen['data'].attributes.formats.medium.url} alt="Imagen_blog" width="400" height="100" />
+    <div class="cotenido">
+        <h3>{titulo}</h3>
+        <h3 class="fecha">{formatearFecha(publishedAt)}</h3>
+        <p class="resumen texto">{contenido}</p>
+        <a href={`/posts/${url}`} class="enlace">Leer post</a>
+    </div>
+</article>
+
+<style>
+.post {
+    max-width: 80rem;
+    margin: 0 auto;
+}
+.contenido {
+    padding: 1.5rem;
+}
+.contenido h3 {
+    font-weight: 900;
+    font-size: 2.8rem;
+    margin: 0;
+}
+.fecha {
+    font-size: 1.6rem;
+    color: var(--primary);
+}
+.resumen {
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 4;
+    overflow: hidden;
+}
+.texto {
+    text-align: justify;
+    white-space: pre-wrap;
+}
+
+.mt-3 {
+    margin-top: 3rem;
+}
+.enlace {
+    margin-top: 2rem;
+    display: block;
+    background-color: var(--black);
+    color: var(--white);
+    text-decoration: none;
+    padding: 1rem;
+    text-align: center;
+    text-transform: uppercase;
+    font-size: 1.4rem;
+    font-weight: 700;
+    transition-property: background-color;
+    transition-duration: 300ms;
+}
+.enlace:hover {
+    background-color: var(--primary);
+}
+</style>
